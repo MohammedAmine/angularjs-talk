@@ -1,0 +1,42 @@
+html.reveal {
+  aside {
+    display: none;
+  }
+  
+  pre {
+    font-size: 20px;
+    padding: 10px;
+  }
+  
+  .example-centered {
+    text-align: center;
+  }
+  
+  .example {
+    font-size: 20px;
+    border: 1px solid #888888;
+    padding: 20px 10px;
+    width: 90%;
+    margin: 15px auto;
+    box-shadow: 0px 0px 6px rgba(0,0,0,0.3);
+  }
+  
+  .logo {
+    a {
+      border: none;
+    }
+    img {
+      border: none;
+      width: 50%;
+      box-shadow: none;
+    }
+    
+    &.smaller img {
+      width: 40%;
+    }
+  }
+  
+  .slides > section {
+    padding-top: 0;
+  }
+}

@@ -1,0 +1,485 @@
+<!doctype html>
+<html class="reveal">
+  <head>
+    <title>
+      AngularJS: Embracing Data-binding
+    </title>
+    
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    
+    <!-- Reveal -->
+    <link rel="stylesheet" type="text/css" href="css/reveal.css" />
+    <link rel="stylesheet" type="text/css" href="css/reveal-theme.css" />
+    <script type="text/javascript" src="js/reveal.js"></script>
+    
+    <!-- Prettify -->
+    <link rel="stylesheet" type="text/css" href="css/prettify.css" />
+    <script type="text/javascript" src="js/prettify.js"></script>
+    
+    <!-- AngularJS -->
+    <script type="text/javascript" src="js/underscore.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/angular.js"></script>
+    
+    <!-- Talk -->
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/talk.js"></script>
+  </head>
+  
+  <body ng-app="talk" ng-controller="talk.IndexCtrl" talk-slides>
+    <section>
+      <h1>Embracing data-binding</h1>
+      <aside>
+        * I call it 1 side of the "Angular Way".
+        * Other sides: directives?
+      </aside>
+      
+      <h2>I'm Zach Snow</h2>
+      <aside>
+        * From Minneapolis, MN.
+        * Lived and workd in SF for a few years.
+      </aside>
+      
+      <h3>Hello.</h3>
+      
+    </section>
+  
+    <section>
+      <div class="logo">
+        <a href="https://fareharbor.com/admin/dashboard/" target="_new"><img src="images/fh.png" /></a>
+      </div>
+      
+      <aside>
+        * I work at FareHarbor.
+          - Reservation software for the activities and tourism industry.
+          - Based in Oahu, 3 person tech team in SF.
+      </aside>
+      
+      <h2>+</h2>
+      
+      <div class="logo smaller">
+        <img src="images/angular.png" />
+      </div>
+      
+      <aside>
+        * We've been using AngularJS since right around 1.0.2
+          - We needed to completely rebuild the site
+          - I build a quick trial application and it seemed slick.
+          - None of us had used it before.
+        
+        * We've build a relatively large application using AngularJS.
+          - 20-25k lines.
+        
+        * Experience building FareHarbor forms the basis for this talk.
+          - That's all the experience I have.
+        
+        * Quick demo.
+      </aside>
+    </section> 
+   
+    <section>
+      <section>
+        <h1>Reminder: bidirectional data-biding</h1>  
+      </section>
+      <section>
+        <h2>Inputs (and other things)</h2>
+        
+        <script type="text/ng-template" id="ng-model-example" talk-example>
+          Some field:
+          <input ng-model="someModel.fieldName" type="text"></input>
+        </script>
+        
+        <aside>
+          * Inputs (and other things) bind user input to scope values.
+            - If you change an input value, the scope will change
+                as well.
+            - Implemented with regular event handlers and `scope.$apply`.
+        </aside>
+      </section>
+       
+      <section>
+        <h2>Interpolations and directives (and other things)</h2>
+        <script type="text/ng-template" id="interpolation-example" talk-example>
+          <span ng-if="someModel.fieldName != 'weird'">
+            Some field is [[ someModel.fieldName ]] now!
+          </span>
+        </script>
+        
+        <aside>
+          * Interpolations and directives (and other things) bind scope
+            values to "user output".
+            - If you change the values in the scope, the view
+              will change as well.
+            - Implemented exactly the way you as a consumer of AngularJS
+              would implement your own data-binding: `scope.$watch`.
+        </aside>
+      </section>
+      
+      <section>
+        <div ng-init="someModel = { fieldName: 'nothing' }" class="example">
+          <div ng-include="'ng-model-example'"></div>
+          <hr />
+          <div ng-include="'interpolation-example'"></div>
+        </div>
+      </section>
+    </section>
+      
+    <section>
+      <section>
+        <h1>Running example: Programming Languages</h1>
+        <ul>
+          <li>Properties: name, description, ...</li>
+          <li>Relations: related langauges</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>Controller</h2>
+        <script type="text/javascript" talk-example>
+          var LANGUAGES = [{
+              name: "O'Caml",
+              description: "An ML."
+            }, {
+              name: "Haskell",
+              description: "Lazy."
+            }, {
+              name: "C",
+              description: "The original."
+          }];
+          
+          Talk.controller('talk.ListCtrl', [
+            '$scope',
+            function($scope){
+              $scope.languages = LANGUAGES;
+              
+              $scope.newLanguage = {};
+              $scope.addLanguage = function(){
+                if($scope.newLanguage.name && $scope.newLanguage.description){
+                  $scope.languages.push($scope.newLanguage)
+                }
+                $scope.newLanguage = {};
+              };
+            }
+          ]);
+        </script>
+      </section>
+      
+      <section>
+        <h2>View</h2>
+        <script type="text/ng-template" id="list-example" talk-example>
+          <div class="programming-languages" ng-controller="talk.ListCtrl">
+            <ul>
+              <li ng-repeat="language in languages">
+                <h2 class="name">[[ language.name ]]</h2>
+                <p class="description">
+                  [[ language.description ]]
+                </p>
+              </li>
+            </ul>
+            <div class="add-language">
+              <label>
+                Name: <input ng-model="newLanguage.name" type="text"></input>
+              </label>
+              <label>
+                Description:
+                <textarea ng-model="newLanguage.description"></textarea>
+              </label>
+              <button ng-click="addLanguage()" type="button">Add</button>
+            </div>
+          </div>
+        </script>
+      </section>
+      
+      <section>
+        <div ng-include="'list-example'"></div>
+      </section>
+    </section>
+      
+    <section>
+      <section>
+        <h1>Action at a distance</h1>
+        <ul>
+          <li>"Lexical" scoping via prototypes</li>
+        </ul>
+      </section>
+      <section>
+        <h2>"Bare" variables</h2>
+        <p>Scoped to the current scope and nested scopes.</p>
+        <p>Assignment is on the current scope.</p>
+      </section>
+      
+      <section>
+        <h2>"Dotted" variables</h2>
+        <p>Reference parent scopes.</p>
+        <p>Allows communication between sibling scopes.</p>
+        <p>Can get out of control (<code>$rootScope.someGlobalObject</code>)</p>
+      </section>
+      
+      <section>
+        <h2>Digests run on <code>$rootScope</code></h2>
+        <script type="text/javascript" talk-example>
+          Talk.directive('talkClick', [
+            function(){
+              return {
+                restrict: 'A',
+                link: function(scope, element, attrs){;
+                  element.bind('click', function(){
+                    scope.$$phase = '$apply';
+                    scope.$eval(attrs.talkClick);
+                    scope.$$phase = null;
+                    scope.$digest();
+                  });
+                }
+              };
+            }
+           ]);
+          
+          Talk.directive('talkClickRoot', [
+            '$rootScope',
+            function($rootScope){
+              return {
+                restrict: 'A',
+                link: function(scope, element, attrs){;
+                  element.bind('click', function(){
+                    scope.$$phase = '$apply';
+                    scope.$eval(attrs.talkClickRoot);
+                    scope.$$phase = null;
+                    $rootScope.$digest();
+                  });
+                }
+              };
+            }
+          ]);
+        </script>
+        <aside>
+          * AngularJS event loop.
+        </aside>
+      </section>
+      
+      <section>
+        <h2>Running Example</h2>
+        <script type="text/javascript" talk-example>
+          Talk.controller('talk.ChangeCtrl', [
+            '$scope',
+            function($scope){
+              $scope.changeDescription = function(description){
+                // Accessing parent scope.
+                $scope.languages[0].description = description;
+              };
+            }
+          ]);
+        </script>
+        
+        <script type="text/ng-template" id="scope-example" talk-example>
+          <div class="programming-languages" ng-controller="talk.ListCtrl">
+            <ul>
+              <li ng-repeat="language in languages">
+                <h2 class="name">[[ language.name ]]</h2>
+                <p class="description">
+                  [[ language.description ]]
+                </p>
+              </li>
+            </ul>
+            <div ng-controller="talk.ChangeCtrl">
+              <p talk-click="change('One Description')">Change</p>
+              <p talk-click-root="changeDescription('Another Description')">Change (root)</p>
+            </div>
+          </div>
+        </script>
+        
+      </section>
+      <section>
+        <div ng-include="'scope-example'" class="example"></div>
+      </section>
+    </section>
+    
+    <aside>
+      Toggles:
+        * Often want to "open" and "close" containers.
+        * The simple way:
+          - Controller defines `isOpen`, `toggleOpen()`.
+          - `ng-click="toggleOpen()"
+          - `ng-if="isOpen"`
+        * An improvement: a one-off directive.
+          - `fh-open` === `element.bind('click', function(){
+              scope.$apply(function(){
+                $scope.isOpen = !$scope.isOpen;
+              });
+            });
+          - Scoping issues.
+          
+        * Something more general:
+          - Toggles that can open multiple things.
+          - Toggles that 
+              $scope.isOpen Easy to make a one-off directive.
+          - What about something more general?
+          - "Toggles" to change the visibility of things that are "toggled".
+    </aside>
+    
+    <section>
+      <h1>Identity Maps</h1>
+      <aside>
+        Identity Maps and Client-side Caches: Intro
+          * "Identity maps", "client side caches", some other name.
+          * A "global registry" of model instances that you have seen.
+      </aside>
+      
+      <h2>A Useful Invariant</h2>
+      <script type="text/plain" talk-example class="example-centered">
+        x.uri === y.uri ==> x === y
+      </script>
+      
+      <aside>
+        * Invariant: if I have two references to a model instance
+          with the same identifier (URI, pk, etc.), then the references
+          are ===.
+        * Got a lot of discussion with respect to Backbone.
+      </aside>
+      
+      <h2>Identity maps + AngularJS === AWESOME</h2>
+      <aside>
+        * Pretty useful in general.
+          - In a Backbone application, it can be useful to know that
+            when you are rendering a template based on a model instance,
+            you have the most up-to-date data.
+          - But when do you render?
+        * SUPER useful with AngularJS.
+      </aside>
+    </section>      
+      
+    <section>
+      <section>
+        <h1>Identity Maps: The approach</h1>
+        <aside>
+          Identity Maps: The approach
+            * First, we need to make sure all of our model instances get run
+              through this global registry.
+              - AngularJS scopes obviate the need for actual model classes in
+                many cases.
+              - In FareHarbor a "model instance" is just an object with a
+                uri. 
+              - Should be recursive for when data comes back from the server
+                with relationships pre-filled.
+        </aside>
+      </section>
+      <section>
+        <h2>The <code>cache</code> service</h2>
+        <script type="text/javascript" talk-example>
+          cache = {};
+          cache._cache = {};
+          cache.read = function(uri){
+            return cache._cache[uri];
+          };
+        </script>
+        <aside>
+          * Read just tries to pull an object out of the cache.
+        </aside>
+      </section>
+      
+      <section>
+        <h2>The <code>cache</code> service</h2>
+        <script type="text/javascript" talk-example>
+          _.mixin({
+            clear: function(object){
+              _.forEach(_.keys(object), function(key){
+                delete object[key];
+              });
+            }
+          });
+          
+          cache.update = function(data){
+            if(_.isArray(data)){
+              return _.map(data, cache.update);
+            }
+            else if(_.isObject(data)){
+              var existingData = {}
+              if(data.uri){
+                existingData = cache.read(data.uri);
+                if(existingData){
+                  _.clear(existingData);
+                }
+                else {
+                  cache._cache[data.uri] = existingData = {};
+                }
+              }
+              _.forEach(data, function(value, key){
+                existingData[key] = cache.update(value);
+              });
+              
+              return existingData;
+            }
+            else {
+              return data;
+            }
+          };
+        </script>
+        <aside>        
+          Update recurses over a data structure and updates the
+          cache for each model instance found.
+        </aside>
+      </section>
+      
+      <section>
+        <h2>Response Transformers</h2>
+        <script type="text/javascript" talk-example>
+          Talk.config([
+            '$httpProvider',
+            function($httpProvider){
+              $httpProvider.defaults.transformResponse.push(function(data){
+                return cache.update(data);
+              });
+            }
+          ]);
+        </script>
+        
+        <aside>
+          * Pipe server responses through the `cache.update`.
+            - return cache.update(data);
+          * Only ever access data
+        </aside>
+      </section>
+      
+      <section>
+        <h2>Running example: data model</h2>
+        <script type="text/javascript" talk-example>
+          LANGUAGES_WITH_URI = [
+            { name: "O'Caml", description: "An ML.", uri: "/ocaml/" },
+            { name: "Haskell", description: "Lazy.", uri: "/haskell/" },
+            { name: "C", description: "The original.", uri: "/c/" },
+            { name: "C++", description: "The incremented original.", uri: "/c++/" }
+          ];
+          
+          C_RELATED_LANGUAGES = [
+            { name: "C++", uri: "/c++/" }
+          ];
+        </script>
+        <aside>
+          Cheat and use it directly so I don't need to run a server.
+        </aside>
+        <script type="text/javascript" talk-example>
+          Talk.controller('talk.MagicCtrl', [
+            '$scope',
+            function($scope){
+              $scope.languages = cache.update(LANGUAGES_WITH_URI);
+              $scope.relatedLanguages = cache.update(C_RELATED_LANGUAGES)
+            }
+          ]);
+        </script>
+      </section>
+      <section>
+        <script type="text/ng-template" id="magic-example" talk-example>
+          <div ng-controller="talk.MagicCtrl">
+            Is there magic?
+            <b ng-if="languages[3] === relatedLanguages[0]">Yes!</b>
+          </div>
+        </script>
+        <div ng-include="'magic-example'" class="example"></div>
+      </section>
+    </section>
+    
+    <section>
+      <h1>Identity Maps: The payoff</h1>
+    </section>
+    
+  </body>
+</html>

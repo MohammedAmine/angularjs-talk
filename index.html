@@ -1,11 +1,15 @@
 <!doctype html>
 <html class="reveal">
   <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
     <title>
-      AngularJS: Embracing Data-binding
+      AngularJS: Data-binding
     </title>
     
-    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <!--
+      <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    -->
     
     <!-- Reveal -->
     <link rel="stylesheet" type="text/css" href="css/reveal.css" />
@@ -28,19 +32,19 @@
   
   <body ng-app="talk" ng-controller="talk.IndexCtrl" talk-slides>
     <section>
-      <h1>Embracing data-binding</h1>
+      <h1>Data-binding in AngularJS</h1>
+      
+      <h2>I'm Zach Snow</h2>
+      
+      <h3>Hello.</h3>
+      
       <aside>
         * I call it 1 side of the "Angular Way".
         * Other sides: directives?
-      </aside>
-      
-      <h2>I'm Zach Snow</h2>
-      <aside>
+        
         * From Minneapolis, MN.
-        * Lived and workd in SF for a few years.
+        * Lived and worked in SF for a few years.
       </aside>
-      
-      <h3>Hello.</h3>
       
     </section>
   
@@ -49,22 +53,21 @@
         <a href="https://fareharbor.com/admin/dashboard/" target="_new"><img src="images/fh.png" /></a>
       </div>
       
-      <aside>
-        * I work at FareHarbor.
-          - Reservation software for the activities and tourism industry.
-          - Based in Oahu, 3 person tech team in SF.
-      </aside>
       
-      <h2>+</h2>
+      <h2><3</h2>
       
       <div class="logo smaller">
         <img src="images/angular.png" />
       </div>
       
       <aside>
+        * I work at FareHarbor.
+          - Reservation software for the activities and tourism industry.
+          - Based in Oahu, 3 person tech team in SF.
+      
         * We've been using AngularJS since right around 1.0.2
-          - We needed to completely rebuild the site
-          - I build a quick trial application and it seemed slick.
+          - We needed to completely build the site based on a proof of concept.
+          - I built a quick trial application and it seemed slick.
           - None of us had used it before.
         
         * We've build a relatively large application using AngularJS.
@@ -74,15 +77,18 @@
           - That's all the experience I have.
         
         * Quick demo.
+          - The reason I want to show you this is to try to convey some of the
+            assumptions that I have about using AngularJS to build software.
       </aside>
     </section> 
    
     <section>
       <section>
-        <h1>Reminder: bidirectional data-biding</h1>  
+        <h1>Data-binding: a reminder</h1>  
       </section>
       <section>
-        <h2>Inputs (and other things)</h2>
+        
+        <h2>Inputs (and other things) &rarr;</h2>
         
         <script type="text/ng-template" id="ng-model-example" talk-example>
           Some field:
@@ -98,10 +104,10 @@
       </section>
        
       <section>
-        <h2>Interpolations and directives (and other things)</h2>
+        <h2>Interpolations and directives (and other things) &larr;</h2>
         <script type="text/ng-template" id="interpolation-example" talk-example>
           <span ng-if="someModel.fieldName != 'weird'">
-            Some field is [[ someModel.fieldName ]] now!
+            Some field is <span class="bright">[[ someModel.fieldName ]]</span> now!
           </span>
         </script>
         
@@ -122,8 +128,31 @@
           <div ng-include="'interpolation-example'"></div>
         </div>
       </section>
-    </section>
       
+      <section>
+        <h2>AngularJS Runtime</h2>
+        <ol>
+          <li>
+            Events
+          </li>
+          <li>
+            <code>scope.$apply</code>
+          </li>
+          <li>
+            <code>
+              scope.$digest
+            </code>
+          </li>
+          <li>
+            Render
+          </li>
+        </ol>
+        <div>
+          <img src="images/angular-loop.png" />
+        </div>
+      </section>
+    </section>
+    
     <section>
       <section>
         <h1>Running example: Programming Languages</h1>
@@ -134,7 +163,7 @@
       </section>
       
       <section>
-        <h2>Controller</h2>
+        <h2>“Model"</h2>
         <script type="text/javascript" talk-example>
           var LANGUAGES = [{
               name: "O'Caml",
@@ -146,7 +175,47 @@
               name: "C",
               description: "The original."
           }];
-          
+        </script>
+        <aside>
+          * It's a "model" because it's really just some data.
+          * Oftentimes in AngularJS that's really all you need.
+        </aside>
+      </section>
+      
+      <section>
+        <h2>View</h2>
+        <script type="text/ng-template" id="list-example" talk-example>
+          <div class="programming-languages" ng-controller="talk.ListCtrl">
+            <ul>
+              <li ng-repeat="language in languages" class="language">
+                <h2 class="name">[[ language.name ]]</h2>
+                <p class="description">
+                  [[ language.description ]]
+                </p>
+              </li>
+            </ul>
+            <hr />
+            <div class="add-language">
+              <label>
+                Name: <input ng-model="newLanguage.name" type="text"></input>
+              </label>
+              <label>
+                Description: <input ng-model="newLanguage.description"></input>
+              </label>
+              <button ng-click="addLanguage()" type="button">Add</button>
+            </div>
+          </div>
+        </script>
+        <aside>
+          * Normally you'd use ng-form and such, but this is just a simple example.
+          * The point is that changing the input changes the scope, and that
+            as we change our scope, the changes are reflected in the user output.
+        </aside>
+      </section>
+      
+      <section>
+        <h2>Controller</h2>
+        <script type="text/javascript" talk-example>
           Talk.controller('talk.ListCtrl', [
             '$scope',
             function($scope){
@@ -165,58 +234,104 @@
       </section>
       
       <section>
-        <h2>View</h2>
-        <script type="text/ng-template" id="list-example" talk-example>
-          <div class="programming-languages" ng-controller="talk.ListCtrl">
-            <ul>
-              <li ng-repeat="language in languages">
-                <h2 class="name">[[ language.name ]]</h2>
-                <p class="description">
-                  [[ language.description ]]
-                </p>
-              </li>
-            </ul>
-            <div class="add-language">
-              <label>
-                Name: <input ng-model="newLanguage.name" type="text"></input>
-              </label>
-              <label>
-                Description:
-                <textarea ng-model="newLanguage.description"></textarea>
-              </label>
-              <button ng-click="addLanguage()" type="button">Add</button>
-            </div>
-          </div>
-        </script>
+        <div ng-include="'list-example'" class="example"></div>
+        
+        <aside>
+          * If that's all AngularJS data-binding was, it would still be great.
+          * But, it'd be like having one global scope, everywhere.
+          * How would you manage?
+        </aside>
       </section>
       
-      <section>
-        <div ng-include="'list-example'"></div>
-      </section>
     </section>
       
     <section>
       <section>
-        <h1>Action at a distance</h1>
+        <h1>Data-binding: Managing Complexity</h1>
+        <h2>“Lexical" scoping</h2>
+        <aside>
+          * The quotes are because you usually think of scopes
+            being introduced always by the same thing (blocks, or
+            functions, or whatnot).
+          * In AngularJS directives introduce new scopes... except when they don't.
+          * And you can introduce them yourself if you want.
+        </aside>
+      </section>
+      
+      <section>
+        <h2>“Bare" variables</h2>
+        <h3><code>get</code></h3>
         <ul>
-          <li>"Lexical" scoping via prototypes</li>
+          <li>Current and parent scopes</li>
         </ul>
-      </section>
-      <section>
-        <h2>"Bare" variables</h2>
-        <p>Scoped to the current scope and nested scopes.</p>
-        <p>Assignment is on the current scope.</p>
-      </section>
-      
-      <section>
-        <h2>"Dotted" variables</h2>
-        <p>Reference parent scopes.</p>
-        <p>Allows communication between sibling scopes.</p>
-        <p>Can get out of control (<code>$rootScope.someGlobalObject</code>)</p>
+        <h3><code>set</code></h3>
+        <ul>
+          <li>Current scope</li>
+          <li>Visible to child scopes</li>
+          <li><i>Not</i> visible to parent scopes</li>
+        </ul>
+        <aside>
+          * Just like in, say ML, Javascript, etc.
+        </aside>
       </section>
       
       <section>
-        <h2>Digests run on <code>$rootScope</code></h2>
+        <h2>“Dotted" variables</h2>
+        <ul>
+          <li>(Can) reference parent scopes.</li>
+          <li>Allows communication between sibling scopes, and from child to parent.</li>
+          <li>Can get out of control (<code>$rootScope.someGlobalObject.allTheThings</code>)</li>
+        </ul>
+        <aside>
+          * Really no different than "bare" variables -- it's just that
+            the first part is a lookup of a bare variable. 
+          * Glossing over isolate scopes.
+        </aside>
+      </section>
+      
+      <section>
+        <h2><code>$eval / $apply</code> runs on <code>$scope</code></h2>
+        <script type="text/javascript" talk-example>
+          Talk.controller('talk.OuterCtrl', [
+            '$scope',
+            function($scope){
+              $scope.sayHello = function(){
+                alert('Hello!');
+              };
+            }
+          ]);
+          Talk.controller('talk.InnerCtrl', [
+            '$scope',
+            function($scope){
+              $scope.sayHello = function(){
+                alert('Goodbye!');
+              };
+            }
+          ]);
+        </script>
+        
+        <script type="text/ng-template" id="lexical-example" talk-example>
+          <div ng-controller="talk.OuterCtrl">
+            <a ng-click="sayHello()">Outer hello.</a>
+            <hr />
+            <div ng-controller="talk.InnerCtrl">
+              <a ng-click="sayHello()">Inner hello.</a>
+            </div>
+          </div>
+        </script>
+        
+        <div ng-include="'lexical-example'" class="example"></div>
+        
+        <aside>
+          * Just like lexical scoping in programming languages,
+            AngularJS scopes help manage complexity.
+          * Allows you to focus on a single scope (and it's parents)
+            at a time, instead of siblings, etc.
+        </aside>
+      </section>
+      
+      <section>
+        <h2><code>$digest</code> runs on <code>$rootScope</code></h2>
         <script type="text/javascript" talk-example>
           Talk.directive('talkClick', [
             function(){
@@ -232,7 +347,7 @@
                 }
               };
             }
-           ]);
+          ]);
           
           Talk.directive('talkClickRoot', [
             '$rootScope',
@@ -252,7 +367,8 @@
           ]);
         </script>
         <aside>
-          * AngularJS event loop.
+          * This is the what makes AngularJS so nice!
+            - "Change then fire event" pattern goes away. 
         </aside>
       </section>
       
@@ -280,20 +396,35 @@
                 </p>
               </li>
             </ul>
+            <hr />
             <div ng-controller="talk.ChangeCtrl">
-              <p talk-click="change('One Description')">Change</p>
-              <p talk-click-root="changeDescription('Another Description')">Change (root)</p>
+              <a talk-click="change('One Description')">Change</a>
+              —
+              <a talk-click-root="changeDescription('Another Description')">
+                Change (root)
+              </a>
             </div>
           </div>
         </script>
-        
       </section>
       <section>
         <div ng-include="'scope-example'" class="example"></div>
+        <aside>
+          * The directive that runs the $digest on the current
+            scope doesn't see that a change has occurred, because there
+            is nothing watching that value in the current scope;
+            instead the parent is watching it due to an interpolation.
+          * The directive that runs the $digest on the root scope
+            obviously works just fine. 
+          * So, why does this matter?
+            - Scopes aren't global, they are manageable.
+            - Changes in any part of the scope are reflected everywhere.
+            - Let's embrace it.
+        </aside>
       </section>
     </section>
     
-    <aside>
+    <aside class="skip">
       Toggles:
         * Often want to "open" and "close" containers.
         * The simple way:
@@ -318,32 +449,36 @@
     
     <section>
       <h1>Identity Maps</h1>
-      <aside>
-        Identity Maps and Client-side Caches: Intro
-          * "Identity maps", "client side caches", some other name.
-          * A "global registry" of model instances that you have seen.
-      </aside>
+      
+      <br/>
+      <br/>
       
       <h2>A Useful Invariant</h2>
       <script type="text/plain" talk-example class="example-centered">
         x.uri === y.uri ==> x === y
       </script>
       
+      <br/>
+      <br/>
+      
+      <h3>Identity maps + AngularJS === AWESOME</h3>
       <aside>
+        * "Identity maps", "client side caches", some other name.
+        * A "global registry" of model instances that you have seen.
         * Invariant: if I have two references to a model instance
           with the same identifier (URI, pk, etc.), then the references
           are ===.
-        * Got a lot of discussion with respect to Backbone.
-      </aside>
-      
-      <h2>Identity maps + AngularJS === AWESOME</h2>
-      <aside>
+        * Doesn't have to be a URI of course.
+        * Got a lot of discussion with respect to Backbone.  
         * Pretty useful in general.
           - In a Backbone application, it can be useful to know that
             when you are rendering a template based on a model instance,
             you have the most up-to-date data.
           - But when do you render?
         * SUPER useful with AngularJS.
+          - You don't worry about rendering.
+          - Everywhere that renders a part of the model will always be up
+            to date.
       </aside>
     </section>      
       
@@ -351,15 +486,14 @@
       <section>
         <h1>Identity Maps: The approach</h1>
         <aside>
-          Identity Maps: The approach
-            * First, we need to make sure all of our model instances get run
-              through this global registry.
-              - AngularJS scopes obviate the need for actual model classes in
-                many cases.
-              - In FareHarbor a "model instance" is just an object with a
-                uri. 
-              - Should be recursive for when data comes back from the server
-                with relationships pre-filled.
+            * First, we need to make sure all of our model instances
+              get run through this global registry.
+              - AngularJS scopes obviate the need for actual model
+                classes in many cases.
+              - In FareHarbor a "model instance" is just an
+                object with a uri. 
+              - Should be recursive for when data comes back
+                from the server with relationships pre-filled.
         </aside>
       </section>
       <section>
@@ -379,29 +513,20 @@
       <section>
         <h2>The <code>cache</code> service</h2>
         <script type="text/javascript" talk-example>
-          _.mixin({
-            clear: function(object){
-              _.forEach(_.keys(object), function(key){
-                delete object[key];
-              });
-            }
-          });
-          
           cache.update = function(data){
             if(_.isArray(data)){
               return _.map(data, cache.update);
             }
             else if(_.isObject(data)){
               var existingData = {}
+              
               if(data.uri){
                 existingData = cache.read(data.uri);
-                if(existingData){
-                  _.clear(existingData);
-                }
-                else {
+                if(!existingData){
                   cache._cache[data.uri] = existingData = {};
                 }
               }
+              
               _.forEach(data, function(value, key){
                 existingData[key] = cache.update(value);
               });
@@ -413,9 +538,14 @@
             }
           };
         </script>
-        <aside>        
-          Update recurses over a data structure and updates the
-          cache for each model instance found.
+        
+        <aside>
+          * Update recurses over a data structure and updates the
+            cache for each model instance found.
+          * We *extend* our existing knowledge of a particular model
+            with the server response; you can also *replace* if that
+            makes more sense.
+          * There are richer ways of doing this, but this ain't bad.
         </aside>
       </section>
       
@@ -434,8 +564,7 @@
         
         <aside>
           * Pipe server responses through the `cache.update`.
-            - return cache.update(data);
-          * Only ever access data
+          * Only ever access data after it has been piped through.
         </aside>
       </section>
       
@@ -443,14 +572,14 @@
         <h2>Running example: data model</h2>
         <script type="text/javascript" talk-example>
           LANGUAGES_WITH_URI = [
-            { name: "O'Caml", description: "An ML.", uri: "/ocaml/" },
-            { name: "Haskell", description: "Lazy.", uri: "/haskell/" },
-            { name: "C", description: "The original.", uri: "/c/" },
-            { name: "C++", description: "The incremented original.", uri: "/c++/" }
+            { name: "O'Caml", description: "An ML.", uri: "/1/" },
+            { name: "Haskell", description: "Lazy.", uri: "/2/" },
+            { name: "C", description: "The original.", uri: "/3/" },
+            { name: "C++", description: "The incremented original.", uri: "/4/" }
           ];
           
           C_RELATED_LANGUAGES = [
-            { name: "C++", uri: "/c++/" }
+            { name: "C++", uri: "/4/" }
           ];
         </script>
         <aside>
@@ -474,11 +603,156 @@
           </div>
         </script>
         <div ng-include="'magic-example'" class="example"></div>
+        <aside>
+          * Nice properties:
+            - No worrying about whether changing something on
+              a language will be properly reflected in, say,
+              a list of related langauges.
+            - Information in languages is available in the related languages.
+            - If that information wasn't available (just check!) you'd be
+              free to pull it down.
+        </aside>
       </section>
     </section>
     
     <section>
-      <h1>Identity Maps: The payoff</h1>
+      <section>
+        <h1>Identity Maps: The payoff</h1>
+      </section>
+      
+      <section>
+        <h2>Simple Stuff</h2>
+        <aside>
+          Multiple copies of data will always be up to date.
+        </aside>
+      </section>
+      
+      <section>
+        <script type="text/javascript" talk-example>
+          Talk.controller('talk.NavigationCtrl', [
+            '$scope',
+            function($scope){
+              $scope.languages = cache.update(LANGUAGES_WITH_URI);
+              $scope.view = function(language){
+                $scope.navigation.uri = language.uri;
+              };
+            }
+          ]);
+        </script>
+        
+        <script type="text/ng-template" id="navigation-simple-example" talk-example>
+          <ul class="navigation" ng-controller="talk.NavigationCtrl">
+            <li ng-repeat="language in languages">
+              <a ng-click="view(language)">[[ language.name ]]</a>
+            </li>
+          </ul>
+        </script>
+      </section>
+      
+      <section>
+        <script type="text/javascript" talk-example>
+          Talk.controller('talk.ViewCtrl', [
+            '$scope',
+            function($scope){
+              $scope.$watch('navigation.uri', function(uri){
+                $scope.language = cache.read(uri);
+              });
+              
+              $scope.editing = false;
+              $scope.edit = function(){
+                $scope.editableLanguage = _.extend({}, $scope.language);
+                $scope.editing = true;
+              };
+              $scope.save = function(){
+                _.extend($scope.language, $scope.editableLanguage);
+                $scope.editing = false;
+              };
+              $scope.cancel = function(){
+                $scope.editing = false;
+              };
+            }
+          ]);
+        </script>
+      </section>
+      
+      <section>
+        <script type="text/ng-template" id="view-simple-example" talk-example>
+          <div class="current-language" ng-controller="talk.ViewCtrl">
+            <div ng-if="!editing">
+              <h3>[[ language.name ]]</h3>
+              <p>[[ language.description ]]</p>
+              <a ng-click="edit()">Edit</a>
+            </div>
+            
+            <div ng-if="editing">
+              <label>
+                Name:
+                <input ng-model="editableLanguage.name" type="text"></input>
+              </label>
+              <label>
+                Description:
+                <input ng-model="editableLanguage.description"></input>
+              </label>
+              <a ng-click="save()">Save</a>
+              <a ng-click="cancel()">Cancel</a>
+            </div>
+          </div>
+        </script>
+      </section>
+      
+      <section>
+        <script type="text/ng-template" id="simple-example" talk-example>
+          <div ng-init="navigation = { uri: '/1/' }">
+            <div ng-include="'navigation-simple-example'"></div>
+            <hr />
+            <div ng-include="'view-simple-example'"></div>
+          </div>
+        </script>
+      </section>
+      
+      <section>
+        <div ng-include="'simple-example'" class="example"></div>
+      </section>
+      
+      <section>
+        <h2>Stale data</h2>
+        <h3>(it's a good thing)</h3>
+        <br />
+        <ul>
+          <li>Check the cache for responses before hitting the server.</li>
+          <li>If they exist, render immediately.</li>
+          <li>When the newest data comes back, it will "pop" into place.</li>
+        </ul>
+        <aside>
+          * Idea: queries have URIs too. Let's keep them in the cache as well.
+          * Wrap server requests.
+          * Similar to the $request API.
+        </aside>
+      </section>
+      
+      <section>
+        <h2>Extensions</h2>
+        <ul>
+          <li>
+            Track delete specially, remove instances from relations.
+          </li>
+          <li>
+            "Deep" updates.
+          </li>
+        </ul>
+        <aside>
+          *
+        </aside>
+      </section>
+    </section>
+    
+    <section>
+      <h1>Obligatory</h1>
+      <div class="logo">
+        <a href="https://fareharbor.com/admin/dashboard/" target="_new"><img src="images/fh.png" /></a>
+      </div>
+      <h2>jobs@fareharbor.com</h2>
+      <h3>@zachsnowthatsme</h3>
     </section>
     
   </body>

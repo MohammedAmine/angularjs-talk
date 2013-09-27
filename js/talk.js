@@ -84,7 +84,10 @@
         link: function(scope, element, attrs){
           element.addClass('slides');
           
-          Reveal.initialize({
+          if(!window.Reveal){
+            return;
+          }
+          window.Reveal.initialize({
             controls: true,
             progress: true,
             history: true,

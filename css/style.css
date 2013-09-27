@@ -1,5 +1,29 @@
+html.reveal aside,
+html.print aside {
+  font-size: 10px;
+  line-height: 1.4em;
+  white-space: pre-wrap;
+  text-align: left;
+  color: #888;
+  position: absolute;
+  width: 350px;
+  top: 0;
+  left: -350px;
+  bottom: 0; }
+  html.reveal aside.skip,
+  html.print aside.skip {
+    display: none; }
+
 html.reveal aside {
   display: none; }
+html.reveal h1 {
+  font-size: 40px; }
+html.reveal h2 {
+  font-size: 35px; }
+html.reveal h3 {
+  font-size: 30px; }
+html.reveal a {
+  cursor: pointer; }
 html.reveal pre {
   font-size: 20px;
   padding: 10px; }
@@ -12,13 +36,49 @@ html.reveal .example {
   width: 90%;
   margin: 15px auto;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3); }
+  html.reveal .example .bright {
+    color: #ff2222; }
+  html.reveal .example ul {
+    padding: 0;
+    list-style-type: none; }
+  html.reveal .example .language {
+    width: 400px;
+    padding: 0;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 20px; }
+    html.reveal .example .language .name {
+      padding: 0 5px;
+      padding-top: 10px;
+      color: #202020; }
+    html.reveal .example .language .description {
+      background-color: #eee;
+      padding: 10px;
+      margin: 0; }
+  html.reveal .example label {
+    text-align: left;
+    display: block;
+    padding: 10px 0; }
+  html.reveal .example input, html.reveal .example textarea {
+    padding: 5px;
+    width: 50%; }
+  html.reveal .example .navigation ul, html.reveal .example .navigation li {
+    display: inline; }
+  html.reveal .example .navigation li:not(:last-child):after {
+    content: "•"; }
+html.reveal img {
+  border: none;
+  box-shadow: none; }
 html.reveal .logo a {
   border: none; }
 html.reveal .logo img {
-  border: none;
-  width: 50%;
-  box-shadow: none; }
+  width: 50%; }
 html.reveal .logo.smaller img {
   width: 40%; }
 html.reveal .slides > section {
-  padding-top: 0; }
+  padding-top: 0;
+  margin-top: -50px; }
+html.reveal ol, html.reveal ul {
+  padding-bottom: 20px;
+  font-size: 20px; }
+  html.reveal ol li, html.reveal ul li {
+    padding-bottom: 20px; }
